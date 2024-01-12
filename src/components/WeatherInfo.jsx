@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Button, Card, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const WeatherInfo = ({ latitude, longitude }) => {
   const [weatherData, setWeatherData] = useState(null);
@@ -52,27 +53,43 @@ const WeatherInfo = ({ latitude, longitude }) => {
       fetchWeatherData();
     }
   }, [latitude, longitude, apiKey]);
-
+  const getIcon = (iconCode) => {
+    return `http://openweathermap.org/img/wn/${iconCode}.png`;
+  };
   return (
     <div>
       {loading && <p>Caricamento...</p>}
       {error && <p>{error}</p>}
       {weatherData && (
-        <Card bg="success">
-          <Card.Body>
-            <Card.Title>Meteo {weatherData.name}</Card.Title>
-            {weatherData.weather && weatherData.weather[0] && (
-              <Card.Text>{weatherData.weather[0].description}</Card.Text>
-            )}
-            <Card.Text>
-              Temperature, Min: {weatherData.main.temp_min}°C , Max: {weatherData.main.temp_max}°C , Generale{" "}
-              {weatherData.main.temp} °C
-            </Card.Text>
-            <Card.Text>Perceived temperature: {weatherData.main.feels_like}°C</Card.Text>
-            <Card.Text>Umidity: {weatherData.main.humidity}%</Card.Text>
-            <Card.Text>Wind speed: {weatherData.wind && weatherData.wind.speed} KM/H</Card.Text>
-          </Card.Body>
-        </Card>
+        <Container>
+          <Card bg="success">
+            <Card.Body>
+              <Card.Title>Meteo {weatherData.name}</Card.Title>
+              <Card.Img variant="top" src={getIcon(weatherData.weather[0].icon)} style={{ width: "60px" }} />
+              {weatherData.weather && weatherData.weather[0] && (
+                <Card.Text>
+                  <strong>{weatherData.weather[0].description}</strong>{" "}
+                </Card.Text>
+              )}
+              <Card.Text>
+                Temperature, Min: <strong>{weatherData.main.temp_min}°C</strong> , Max:{" "}
+                <strong>{weatherData.main.temp_max}°C</strong> , Generale <strong> {weatherData.main.temp} °C</strong>
+              </Card.Text>
+              <Card.Text>
+                Perceived temperature: <strong>{weatherData.main.feels_like}°C</strong>
+              </Card.Text>
+              <Card.Text>
+                Umidity: <strong>{weatherData.main.humidity}%</strong>
+              </Card.Text>
+              <Card.Text>
+                Wind speed:<strong> {weatherData.wind && weatherData.wind.speed} KM/H</strong>
+              </Card.Text>
+              <Link to="/">
+                <Button variant="primary">Home</Button>
+              </Link>
+            </Card.Body>
+          </Card>
+        </Container>
       )}
     </div>
   );
